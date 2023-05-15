@@ -3,7 +3,7 @@ Make food spoil. And definitely do not do a hundred other things as well.
 
 ## Core Idea:
 - Make Food spoil
--- Needs a big scope to really make sense
+  - Needs a big scope to really make sense
 
 ## Core Goals:
 - Leave fat as "realistic" as it is, but make it useful
