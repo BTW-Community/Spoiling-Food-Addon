@@ -48,6 +48,11 @@ Make food spoil. And definitely do not do a hundred other things as well.
   - Something with automation would probably be more healthy though
   - Reverse Hibachis are fridges and Stoked Reverse Hibachis are freezers??
 - Food preparation (similar to different spoiling times for food)
+- Ender-fication of food
+  - Food does not spoil in the end, time passes differently there
+  - Certainly nothing to worry about when it comes to food..
+  - (Need some further use-case ideas still)
+
 
 
 
