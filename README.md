@@ -13,24 +13,25 @@ Make food spoil. And definitely do not do a hundred other things as well.
 
 
 ### Food will spoil
-- Some ingredients should also spoil
-- Different spoiling times per food type?
-  - E.g. raw meat spoils faster than cookies
+- Some ingredients should also spoil 🗸
+- Different spoiling times per food type? 🗸
+  - E.g. raw meat spoils faster than cookies 🗸
   - Should probably still be somewhat lenient but needs balancing
-- Food spoiling needs to be easily visible/discernible/estimatable
-  - Perhaps even exact best-before-date?
+- Food spoiling needs to be easily visible/discernible/estimatable 🗸
+  - Perhaps even exact best-before-date? 🗸
 - Multi-Stage spoiling?
   - Some downsides to slightly spoiled food
   - FERMENTING? <.<
-- Non-spoiling items?
+- Non-spoiling items? 🗸
   - Late game stuff for convenience?
 
 ### Non-natural animals age and can die of old age
-- Probably make old animals somehow special (besides look), with different stats
-  - For automation purposes
-  - E.g. make them slower, slightly less tall, can't swim, can't jump, ...
-- People would probably just do "Breeding Farms" ala Valheim with 2 immortal naturals on top, producing offspring
-  - That perhaps needs addressing? E.g. making them lose immortality once the produced offspring
+- Probably make old animals somehow special (besides look), with different stats 🗸
+  - For automation purposes 🗸
+  - E.g. make them slower, slightly less tall, can't swim, can't jump, ... 🗸
+- People would probably just do "Breeding Farms" ala Valheim with 2 immortal naturals on top, producing offspring 🗸
+  - That perhaps needs addressing? E.g. making them lose immortality once the produced offspring 🗸
+- Animals won't age in the end
 
 ### Plants will decay
 - Not the natural/village ones of course, else good luck getting these carrots from 2k blocks away
