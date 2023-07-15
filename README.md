@@ -31,23 +31,25 @@ Make food spoil. And definitely do not do a hundred other things as well.
   - E.g. make them slower, slightly less tall, can't swim, can't jump, ... 🗸
 - People would probably just do "Breeding Farms" ala Valheim with 2 immortal naturals on top, producing offspring 🗸
   - That perhaps needs addressing? E.g. making them lose immortality once the produced offspring 🗸
-- Animals won't age in the end
+- Animals won't age in the end 🗸
 
 ### Plants will decay
-- Not the natural/village ones of course, else good luck getting these carrots from 2k blocks away
-- To prevent "letting crops stay until needed" strategy
+- Not the natural/village ones of course, else good luck getting these carrots from 2k blocks away 🗸
+- To prevent "letting crops stay until needed" strategy 🗸
 - Needs thoughtful balancing as well
 - Also multi-stage
   - For visibility purposes
-- Maybe only get "animal food" out of almost decayed ones
-- What about seeds?
+- Only get "animal food" out of decayed ones, no seeds 🗸
+- What about seeds? 🗸
+  - Seeds will also decay 🗸
 
 ### Prevention of food spoilage
 - Ability to slow food spoiling
 - Fridges, cool boxes, etc, or Reverse Hibachis, of course. Perhaps Stoked Reverse Hibachis.
-  - I like the idea of something with ice and snow, giving extra use to cold biomes
-  - Something with automation would probably be more healthy though
+  - I like the idea of something with ice and snow, giving extra use to cold biomes 🗸
+  - Something with automation would probably be more healthy though 🗸
   - Reverse Hibachis are fridges and Stoked Reverse Hibachis are freezers??
+  - Freezers, automation friendly, use snow/ice for cooling 🗸
 - Food preparation (similar to different spoiling times for food)
 - Ender-fication of food
   - Food does not spoil in the end, time passes differently there
