@@ -22,6 +22,7 @@ Make food spoil. And definitely do not do a hundred other things as well.
 - Multi-Stage spoiling?
   - Some downsides to slightly spoiled food
   - FERMENTING? <.<
+    - Some "sleeping" enhancers perhaps (new Potion effect)? 🗸
 - Non-spoiling items? 🗸
   - Late game stuff for convenience?
 
