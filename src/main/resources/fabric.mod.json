@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "id": "foodspoilmod",
+  "version": "${version}",
+
+  "name": "FoodSpoilMod",
+  "description": "This mod does Food Spoiling plus a hundred other things",
+  "authors": [
+    "Arminias"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+
+  "license": "CC0-1.0",
+  "icon": "foodspoilmod/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "init": [
+      "btw.community.arminias.foodspoil.FoodSpoilMod",
+      "btw.community.arminias.metadata.MetadataExtensionMod"
+    ],
+    "postInit": [
+      "btw.community.arminias.foodspoil.FoodSpoilMod"
+    ]
+  },
+  "mixins": [
+    "foodspoilmod.mixins.json",
+    "metadataextensionmod.mixins.json"
+  ],
+
+  "accessWidener": "metadataextensionmod.accesswidener",
+
+  "depends": {
+    "fabricloader": ">=0.7.4"
+  },
+  "suggests": {
+    "flamingo": "*"
+  }
+}

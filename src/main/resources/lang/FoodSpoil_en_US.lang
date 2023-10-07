@@ -1,0 +1,7 @@
+item.spoiledcropitem.name=Spoiled Crop
+item.sleepingpotionitem.name=Sleeping Potion
+tile.foodspoil.freezer.name=Freezer
+foodspoil.sleeping.postfix= Potion of Sleeping
+foodspoil.sleeping=Sleeping
+foodspoil.freezer.container=Freezer
+foodspoil.freezer.name=Freezer
