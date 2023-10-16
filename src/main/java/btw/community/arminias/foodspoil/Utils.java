@@ -22,7 +22,26 @@ public class Utils {
         }
     }
 
-    public static void mergeDecayNBTsPartial(ItemStack stack1, ItemStack stack2, int amountToBeRemovedFromStack2) {
+    public static boolean mergeDecayNBTsStricter(ItemStack stack1, ItemStack stack2, long totalWorldTime) {
+        if (FoodType.getFoodTypeFast(stack1.itemID) == FoodType.UNSPOILABLE) {
+            stack1.stackTagCompound.setLong("spoilDate", Long.MAX_VALUE);
+            stack1.stackTagCompound.setLong("creationDate", 0);
+            stack2.stackTagCompound.setLong("spoilDate", Long.MAX_VALUE);
+            stack2.stackTagCompound.setLong("creationDate", 0);
+            return true;
+        } else if (Math.abs(Utils.getPercentageSpoilTimeLeft(stack1, totalWorldTime) - Utils.getPercentageSpoilTimeLeft(stack2, totalWorldTime)) < FoodSpoilMod.AUTOMATIC_MERGE_THRESHOLD) {
+            long avg = (stack1.stackTagCompound.getLong("spoilDate") * stack1.stackSize + stack2.stackSize * stack2.stackTagCompound.getLong("spoilDate")) / (long) (stack1.stackSize + stack2.stackSize);
+            long avg2 = (stack1.stackTagCompound.getLong("creationDate") * stack1.stackSize + stack2.stackSize * stack2.stackTagCompound.getLong("creationDate")) / (long) (stack1.stackSize + stack2.stackSize);
+            stack2.stackTagCompound.setLong("spoilDate", avg);
+            stack2.stackTagCompound.setLong("creationDate", avg2);
+            stack1.stackTagCompound.setLong("spoilDate", avg);
+            stack1.stackTagCompound.setLong("creationDate", avg2);
+            return true;
+        }
+        return false;
+    }
+
+    public static void mergeDecayNBTsPartialRelaxed(ItemStack stack1, ItemStack stack2, int amountToBeRemovedFromStack2) {
         if (FoodType.getFoodTypeFast(stack1.itemID) == FoodType.UNSPOILABLE) {
             stack1.stackTagCompound.setLong("spoilDate", Long.MAX_VALUE);
             stack2.stackTagCompound.setLong("spoilDate", Long.MAX_VALUE);
@@ -34,6 +53,23 @@ public class Utils {
             stack1.stackTagCompound.setLong("spoilDate", avg);
             stack1.stackTagCompound.setLong("creationDate", avg2);
         }
+    }
+
+    public static boolean mergeDecayNBTsPartialStricter(ItemStack stack1, ItemStack stack2, int amountToBeRemovedFromStack2, long totalWorldTime) {
+        if (FoodType.getFoodTypeFast(stack1.itemID) == FoodType.UNSPOILABLE) {
+            stack1.stackTagCompound.setLong("spoilDate", Long.MAX_VALUE);
+            stack2.stackTagCompound.setLong("spoilDate", Long.MAX_VALUE);
+            stack2.stackTagCompound.setLong("creationDate", 0);
+            stack1.stackTagCompound.setLong("creationDate", 0);
+            return true;
+        } else if (Math.abs(Utils.getPercentageSpoilTimeLeft(stack1, totalWorldTime) - Utils.getPercentageSpoilTimeLeft(stack2, totalWorldTime)) < FoodSpoilMod.AUTOMATIC_MERGE_THRESHOLD) {
+            long avg = (stack1.stackTagCompound.getLong("spoilDate") * stack1.stackSize + amountToBeRemovedFromStack2 * stack2.stackTagCompound.getLong("spoilDate")) / (long) (stack1.stackSize + amountToBeRemovedFromStack2);
+            long avg2 = (stack1.stackTagCompound.getLong("creationDate") * stack1.stackSize + amountToBeRemovedFromStack2 * stack2.stackTagCompound.getLong("creationDate")) / (long) (stack1.stackSize + amountToBeRemovedFromStack2);
+            stack1.stackTagCompound.setLong("spoilDate", avg);
+            stack1.stackTagCompound.setLong("creationDate", avg2);
+            return true;
+        }
+        return false;
     }
 
     public static void initFoodItemServer(ItemStack itemStack, int itemID) {
@@ -79,7 +115,7 @@ public class Utils {
         if (item != null && (tag = item.getTagCompound()) != null &&
                 (spoilDate = tag.getLong("spoilDate")) > 0) {
             if (worldTime < spoilDate) {
-                return (float) (spoilDate - worldTime) / (float) FoodType.getDecayTimeFast(item.itemID);
+                return (float) ((double) (spoilDate - worldTime) / (double) FoodType.getDecayTimeFast(item.itemID));
             } else {
                 return 0.0F;
             }
@@ -130,5 +166,13 @@ public class Utils {
 
     public static boolean isCoolingBlock(Block block) {
         return block != null && (block.blockMaterial == Material.ice || block.blockMaterial == Material.snow || block.blockMaterial == Material.craftedSnow);
+    }
+
+    public static long getTotalWorldTime() {
+        if (MinecraftServer.getIsServer()) {
+            return MinecraftServer.getServer().worldServers[0].getTotalWorldTime();
+        } else {
+            return Minecraft.getMinecraft().theWorld.getTotalWorldTime();
+        }
     }
 }

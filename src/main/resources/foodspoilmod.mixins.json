@@ -11,6 +11,7 @@
     "HamperTileEntityMixin",
     "InventoryMixin",
     "InventoryMixin2",
+    "InventoryPlayerMixin",
     "InventoryUtilsMixin",
     "ItemStackMixin",
     "SingleInventoryMixin",

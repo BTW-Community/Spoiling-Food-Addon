@@ -47,6 +47,9 @@ public class Packet56MapChunksMixin {
         return constant + 8 * 2048;
     }*/
 
+    /**
+     * @author Arminias
+     */
     @Overwrite
     public void readPacketData(DataInputStream par1DataInputStream) throws IOException
     {

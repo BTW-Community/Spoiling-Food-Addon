@@ -36,15 +36,13 @@ public abstract class ItemStackMixin {
         }
     }
 
+    /*
     @Inject(method = "copy", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
     private void copyDecayTime(CallbackInfoReturnable<ItemStack> cir, ItemStack itemStack) {
         if (this.stackTagCompound == null) {
             itemStack.stackTagCompound = null;
         }
     }
-
-    @Shadow
-    public abstract void setTagCompound(NBTTagCompound nbtTagCompound);
-
+    */
 
 }

@@ -1,10 +1,7 @@
 package btw.community.arminias.foodspoil.mixin;
 
 import btw.community.arminias.foodspoil.Utils;
-import net.minecraft.src.Container;
-import net.minecraft.src.EntityPlayer;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.Slot;
+import net.minecraft.src.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -13,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import java.util.List;
 
 @Mixin(Container.class)
-public class ContainerMixin {
+public abstract class ContainerMixin {
     @Shadow public List inventorySlots;
 
     @Redirect(method = "slotClick", at = @At(value = "INVOKE", target = "Lnet/minecraft/src/ItemStack;areItemStackTagsEqual(Lnet/minecraft/src/ItemStack;Lnet/minecraft/src/ItemStack;)Z", ordinal = 0))
@@ -31,7 +28,7 @@ public class ContainerMixin {
                 var21 = stack2.getMaxStackSize() - stack1.stackSize;
             }
 
-            Utils.mergeDecayNBTsPartial(stack1, stack2, var21);
+            Utils.mergeDecayNBTsPartialRelaxed(stack1, stack2, var21);
 
             return true;
         }
@@ -54,11 +51,11 @@ public class ContainerMixin {
             {
                 if (iDestStackSize <= iMaxStackSize)
                 {
-                    Utils.mergeDecayNBTs(stackSource, tempDestStack);
+                    if (!Utils.mergeDecayNBTsStricter(stackSource, tempDestStack, Utils.getTotalWorldTime())) return false;
                 }
                 else
                 {
-                    Utils.mergeDecayNBTsPartial(tempDestStack, stackSource, (iMaxStackSize - tempDestStack.stackSize));
+                    if (!Utils.mergeDecayNBTsPartialStricter(tempDestStack, stackSource, (iMaxStackSize - tempDestStack.stackSize), Utils.getTotalWorldTime())) return false;
                 }
             }
 

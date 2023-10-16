@@ -87,7 +87,7 @@ public enum FoodType {
                 Item.bowlSoup.itemID, BTWItems.redMushroom.itemID, BTWItems.brownMushroom.itemID)
         );
         PLANT_ITEMS.addAll(Arrays.asList(
-                Item.wheat.itemID, Item.melonSeeds.itemID, Item.pumpkinSeeds.itemID, Item.seeds.itemID, Item.netherStalkSeeds.itemID,
+                Item.wheat.itemID, BTWItems.wheat.itemID, Item.melonSeeds.itemID, Item.pumpkinSeeds.itemID, Item.seeds.itemID, Item.netherStalkSeeds.itemID,
                 BTWItems.carrotSeeds.itemID, BTWItems.wheatSeeds.itemID, BTWItems.cocoaBeans.itemID)
         );
         UNSPOILABLE_ITEMS.addAll(Arrays.asList(
@@ -95,7 +95,7 @@ public enum FoodType {
                 BTWItems.creeperOysters.itemID, BTWItems.foulFood.itemID)
         );
         OTHER_ITEMS.addAll(Arrays.asList(
-                BTWItems.chickenFeed.itemID, BTWItems.breadDough.itemID, BTWItems.unbakedCookies.itemID
+                BTWItems.chickenFeed.itemID, BTWItems.breadDough.itemID, BTWItems.unbakedCookies.itemID, BTWItems.flour.itemID
                 )
         );
     }

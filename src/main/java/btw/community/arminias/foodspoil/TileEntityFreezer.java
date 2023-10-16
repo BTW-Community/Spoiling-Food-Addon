@@ -283,7 +283,7 @@ public class TileEntityFreezer extends TileEntity implements ISidedInventory, Ti
                         // Check for (almost) bad food
                         if (this.freezerContents[i] != null && isStackValidForSlot(i, this.freezerContents[i])) {
                             ItemStack item = this.freezerContents[i];
-                            double spoilPercentage = Utils.getPercentageSpoilTimeLeft(item, worldObj.getTotalWorldTime());
+                            float spoilPercentage = Utils.getPercentageSpoilTimeLeft(item, worldObj.getTotalWorldTime());
                             if (spoilPercentage > 0 && spoilPercentage <= FoodSpoilMod.FOOD_GETTING_BAD_PERCENTAGE
                                 && (FoodType.getFoodTypeFast(item.getItem()) == FoodType.FRUIT || FoodType.getFoodTypeFast(item.getItem()) == FoodType.VEGETABLE)) {
                                 badFoodTickCounter = (byte) Math.min(8, badFoodTickCounter + 1);
