@@ -5,7 +5,11 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "BTWContainersMixin",
+    "BulkCraftingManagerMixin",
+    "BulkRecipeAccessor",
+    "CauldronTileEntityMixin",
     "ContainerMixin",
+    "CraftingManagerMixin",
     "EntityItemMixin",
     "EntityPlayerMixin",
     "HamperTileEntityMixin",
@@ -49,7 +53,8 @@
     "animal.RenderLivingMixin"
   ],
   "injectors": {
-    "defaultRequire": 1
+    "defaultRequire": 1,
+    "maxShiftBy": 5
   },
   "plugin": "net.devtech.grossfabrichacks.GrossFabricHacks"
 }

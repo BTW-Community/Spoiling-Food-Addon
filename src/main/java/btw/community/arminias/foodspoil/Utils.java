@@ -175,4 +175,31 @@ public class Utils {
             return Minecraft.getMinecraft().theWorld.getTotalWorldTime();
         }
     }
+
+    public static void inheritFoodDecay(ItemStack oldItem, ItemStack newItem, long worldTime) {
+        // Inherit it percentage wise
+        if (oldItem != null && newItem != null && oldItem.stackTagCompound.hasKey("spoilDate") && oldItem.stackTagCompound.hasKey("creationDate") && FoodType.getFoodTypeFast(newItem.itemID) != null) {
+            if (FoodType.getFoodTypeFast(newItem.itemID) != FoodType.UNSPOILABLE) {
+                long oldCreationDate = oldItem.stackTagCompound.getLong("creationDate");
+                float percentageSpoilTimeLeft = Utils.getPercentageSpoilTimeLeft(oldItem, worldTime);
+                percentageSpoilTimeLeft = Math.min(percentageSpoilTimeLeft + FoodSpoilMod.COOKING_SPOILING_BONUS, 1.0F);
+                long newSpoilDate = worldTime + (long) (percentageSpoilTimeLeft * (float) FoodType.getDecayTimeFast(newItem.itemID));
+                long newCreationDate = worldTime - (long) (percentageSpoilTimeLeft * (float) (worldTime - oldCreationDate));
+                newItem.stackTagCompound.setLong("spoilDate", newSpoilDate);
+                newItem.stackTagCompound.setLong("creationDate", newCreationDate);
+            }
+        }
+    }
+
+    public static void setSpoilTime(ItemStack item, float spoilPercentage, long worldTime) {
+        // Inherit it percentage wise
+        if (item != null && FoodType.getFoodTypeFast(item.itemID) != null) {
+            if (FoodType.getFoodTypeFast(item.itemID) != FoodType.UNSPOILABLE) {
+                long newSpoilDate = worldTime + (long) (spoilPercentage * (float) FoodType.getDecayTimeFast(item.itemID));
+                item.stackTagCompound.setLong("spoilDate", newSpoilDate);
+                item.stackTagCompound.setLong("creationDate", worldTime);
+            }
+        }
+    }
+
 }

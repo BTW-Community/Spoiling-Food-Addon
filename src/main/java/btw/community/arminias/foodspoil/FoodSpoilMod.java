@@ -12,6 +12,7 @@ public class FoodSpoilMod implements ModInitializer, ModPostInitializer {
 	public static final double FOOD_GETTING_BAD_PERCENTAGE = 0.15; // 15% of the total time
     public static final double WORLD_ICE_PRESERVATION_FACTOR = 0.8;
 	public static final float AUTOMATIC_MERGE_THRESHOLD = 0.15F;
+	public static final float COOKING_SPOILING_BONUS = 0.2F;
 
 
     @Override

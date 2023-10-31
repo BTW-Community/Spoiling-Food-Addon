@@ -14,18 +14,18 @@ import java.util.Map;
 import static btw.util.MiscUtils.TICKS_PER_GAME_DAY;
 
 public enum FoodType {
-    MEAT(2 * TICKS_PER_GAME_DAY, Item.rottenFlesh),
-    VEGETABLE(4 * TICKS_PER_GAME_DAY, BTWItems.foulFood),
-    FRUIT(4 * TICKS_PER_GAME_DAY, BTWItems.foulFood),
-    BREAD(6 * TICKS_PER_GAME_DAY, BTWItems.foulFood),
-    FISH((long) (1.5 * TICKS_PER_GAME_DAY), BTWItems.foulFood),
-    MILK(2 * TICKS_PER_GAME_DAY, Item.bucketEmpty),
-    EGG(3 * TICKS_PER_GAME_DAY, BTWItems.foulFood),
-    SWEET(6 * TICKS_PER_GAME_DAY, BTWItems.foulFood),
-    MUSHROOM(3 * TICKS_PER_GAME_DAY, BTWItems.foulFood),
-    PLANT(5 * TICKS_PER_GAME_DAY, null),
+    MEAT(5 * TICKS_PER_GAME_DAY, Item.rottenFlesh),
+    VEGETABLE(8 * TICKS_PER_GAME_DAY, BTWItems.foulFood),
+    FRUIT(8 * TICKS_PER_GAME_DAY, BTWItems.foulFood),
+    BREAD(9 * TICKS_PER_GAME_DAY, BTWItems.foulFood),
+    FISH((long) (3 * TICKS_PER_GAME_DAY), BTWItems.foulFood),
+    MILK(6 * TICKS_PER_GAME_DAY, Item.bucketEmpty),
+    EGG(6 * TICKS_PER_GAME_DAY, BTWItems.foulFood),
+    SWEET(9 * TICKS_PER_GAME_DAY, BTWItems.foulFood),
+    MUSHROOM(6 * TICKS_PER_GAME_DAY, BTWItems.foulFood),
+    PLANT(9 * TICKS_PER_GAME_DAY, null),
     UNSPOILABLE(Long.MAX_VALUE, null),
-    OTHER(5 * TICKS_PER_GAME_DAY, null),
+    OTHER(9 * TICKS_PER_GAME_DAY, null),
     OVERRIDE(9999L, null);
 
     private static final ArrayList<Integer> MEAT_ITEMS = new ArrayList<>();
