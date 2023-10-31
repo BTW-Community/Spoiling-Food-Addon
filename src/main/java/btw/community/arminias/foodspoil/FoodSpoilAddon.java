@@ -17,7 +17,7 @@ public class FoodSpoilAddon extends BTWAddon {
     public static Potion sleeping;
 
     public FoodSpoilAddon() {
-        super("Food Spoil Addon", "0.2.1", "FoodSpoil");
+        super("Food Spoil Addon", "0.3.0", "FoodSpoil");
     }
 
     @Override
