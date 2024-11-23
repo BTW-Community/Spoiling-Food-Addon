@@ -1,5 +1,6 @@
 package btw.community.arminias.foodspoil;
 
+import btw.block.BTWBlocks;
 import btw.block.tileentity.TileEntityDataPacketHandler;
 import btw.inventory.util.InventoryUtils;
 import btw.util.MiscUtils;
@@ -37,7 +38,7 @@ public class TileEntityFreezer extends TileEntity implements ISidedInventory, Ti
     private long lastTickTime = 0L;
 
     public TileEntityFreezer() {
-        this.BASE_FREEZE_TIME = 400;
+        this.BASE_FREEZE_TIME = FoodSpoilAddon.getBaseFreezeTime();
         this.BASE_TICK_MULTIPLIER = 8;
     }
 
@@ -204,11 +205,13 @@ public class TileEntityFreezer extends TileEntity implements ISidedInventory, Ti
     }
 
     public int getItemFreezeTime(ItemStack stack) {
-        if (stack != null && isStackValidForSlot(9, stack)) {
+        if (stack != null && isItemValidForSlot(9, stack)) {
             if (stack.getItem() instanceof ItemBlock) {
                 Block block = Block.blocksList[((ItemBlock) stack.getItem()).getBlockID()];
-                if (block.blockMaterial == Material.ice || block.blockMaterial == Material.snow || block.blockMaterial == Material.craftedSnow) {
+                if (block == BTWBlocks.looseSnowSlab || block == BTWBlocks.solidSnowSlab) {
                     return BASE_FREEZE_TIME * 4 * BASE_TICK_MULTIPLIER;
+                } else if (block.blockMaterial == Material.ice || block.blockMaterial == Material.snow || block.blockMaterial == Material.craftedSnow) {
+                    return BASE_FREEZE_TIME * 8 * BASE_TICK_MULTIPLIER;
                 }
             }
             return BASE_FREEZE_TIME * BASE_TICK_MULTIPLIER;
@@ -253,40 +256,40 @@ public class TileEntityFreezer extends TileEntity implements ISidedInventory, Ti
             long oldTickTime = this.lastTickTime;
             this.lastTickTime = tick;
             long timeSinceLastTick = this.lastTickTime - oldTickTime;
-            if (freezeTime > 0 && overflowCounter < 8) {
-                freezeTime -= timeSinceLastTick * BASE_TICK_MULTIPLIER / (numNeighbors * 0.25 + 0.25);
+            if (freezeTime - timeSinceLastTick * BASE_TICK_MULTIPLIER / (numNeighbors * 0.125 + 1.0) > 0 && overflowCounter < 8) {
+                freezeTime -= timeSinceLastTick * BASE_TICK_MULTIPLIER / (numNeighbors * 0.125 + 1.0);
                 updateItemSpoilTimes(timeSinceLastTick);
-                /*if (overflowCounter > 0) {
-                    boolean couldOverflow = updateWaterOverflowing(timeSinceLastTick);
-                    if (couldOverflow) {
-                        overflowCounter = 0;
-                    }
-                }*/
             } else if (overflowCounter < 8) {
-                if (this.freezerContents[9] == null || !isStackValidForSlot(9, this.freezerContents[9])) {
-                    // Grab the next valid item from the inventory, swap it into slot 9
-                    for (int i = 0; i < 9; ++i) {
-                        if (this.freezerContents[i] != null && isStackValidForSlot(9, this.freezerContents[i])) {
-                            ItemStack temp = this.freezerContents[9];
-                            this.freezerContents[9] = this.freezerContents[i];
-                            this.freezerContents[i] = temp;
-                            break;
-                        }
+                swapInNextFreezeItemIfNeeded();
+                if (this.freezerContents[9] != null && isItemValidForSlot(9, this.freezerContents[9])) {
+                    int timesUpdated = 0;
+                    freezeTime -= timeSinceLastTick * BASE_TICK_MULTIPLIER / (numNeighbors * 0.125 + 1.0);
+                    while (this.freezeTime <= 0 && this.freezerContents[9] != null && isItemValidForSlot(9, this.freezerContents[9])) {
+                        this.freezeTime += getItemFreezeTime(this.freezerContents[9]);
+                        decrStackSize(9, 1);
+                        overflowCounter = (byte) Math.min(9, overflowCounter + 1);
+                        timesUpdated++;
+                        swapInNextFreezeItemIfNeeded();
                     }
-                }
-                if (this.freezerContents[9] != null && isStackValidForSlot(9, this.freezerContents[9])) {
-                    this.currentItemFreezeTime = this.freezeTime = getItemFreezeTime(this.freezerContents[9]);
-                    decrStackSize(9, 1);
-                    updateItemSpoilTimes(timeSinceLastTick);
-                    overflowCounter++;
+
+                    long notMissingTimeSinceLastTick;
+                    if (freezeTime < 0) {
+                        notMissingTimeSinceLastTick = (long) (timeSinceLastTick + freezeTime / BASE_TICK_MULTIPLIER);
+                        freezeTime = 0;
+                    } else {
+                        notMissingTimeSinceLastTick = timeSinceLastTick;
+                    }
+
+                    this.currentItemFreezeTime = this.freezeTime;
+                    updateItemSpoilTimes(notMissingTimeSinceLastTick);
                     for (int i = 0; i < 9; i++) {
                         // Check for (almost) bad food
-                        if (this.freezerContents[i] != null && isStackValidForSlot(i, this.freezerContents[i])) {
+                        if (this.freezerContents[i] != null && isItemValidForSlot(i, this.freezerContents[i])) {
                             ItemStack item = this.freezerContents[i];
                             float spoilPercentage = Utils.getPercentageSpoilTimeLeft(item, worldObj.getTotalWorldTime());
-                            if (spoilPercentage > 0 && spoilPercentage <= FoodSpoilMod.FOOD_GETTING_BAD_PERCENTAGE
+                            if (spoilPercentage > 0 && spoilPercentage <= FoodSpoilAddon.getFoodGettingBadPercentage()
                                 && (FoodType.getFoodTypeFast(item.getItem()) == FoodType.FRUIT || FoodType.getFoodTypeFast(item.getItem()) == FoodType.VEGETABLE)) {
-                                badFoodTickCounter = (byte) Math.min(8, badFoodTickCounter + 1);
+                                badFoodTickCounter = (byte) Math.min(8, badFoodTickCounter + timesUpdated);
                                 if (worldObj != null && !worldObj.isRemote) {
                                     worldObj.setBlockTileEntity(xCoord, yCoord, zCoord, this);
                                 }
@@ -294,15 +297,26 @@ public class TileEntityFreezer extends TileEntity implements ISidedInventory, Ti
                             }
                         }
                     }
-                    this.onInventoryChanged();
-                    /*boolean couldOverflow = updateWaterOverflowing(timeSinceLastTick);
-                    if (couldOverflow) {
-                        overflowCounter = 0;
+
+                    if (overflowCounter >= 9) {
+                        boolean couldOverflow = updateWaterOverflowing(timeSinceLastTick);
+                        if (couldOverflow) {
+                            overflowCounter = 0;
+                            badFoodTickCounter = 0;
+                            if (worldObj != null && !worldObj.isRemote) {
+                                worldObj.setBlockTileEntity(xCoord, yCoord, zCoord, this);
+                            }
+                        }
                     }
-                    else {
-                        overflowCounter++;
-                    }*/
+                    this.onInventoryChanged();
+                } else {
+                    // Freeze time goes into negative (or zero)
+                    // We can't swap in a new item, so we just add the remaining freeze time to the spoil time of the current items (so not everything)
+                    updateItemSpoilTimes((long) (timeSinceLastTick - (timeSinceLastTick * BASE_TICK_MULTIPLIER / (numNeighbors * 0.125 + 1.0)) / BASE_TICK_MULTIPLIER));
+                    freezeTime = 0;
+                    this.currentItemFreezeTime = 0;
                 }
+
             } else {
                 boolean couldOverflow = updateWaterOverflowing(timeSinceLastTick);
                 if (couldOverflow) {
@@ -348,7 +362,7 @@ public class TileEntityFreezer extends TileEntity implements ISidedInventory, Ti
 
         Block block = Block.blocksList[iBlockID];
 
-        if (block == null || !(block instanceof FreezerBlock)) {
+        if (!(block instanceof FreezerBlock)) {
             // shouldn't happen but just in case... don't want to crash the game over it. Just stop ticking. The block will be removed soon.
             return;
         }
@@ -366,6 +380,20 @@ public class TileEntityFreezer extends TileEntity implements ISidedInventory, Ti
                         worldObj.setBlockTileEntity(xCoord, yCoord, zCoord, this);
                     }
                     this.onInventoryChanged();
+                }
+            }
+        }
+    }
+
+    private void swapInNextFreezeItemIfNeeded() {
+        if ((this.freezerContents[9] == null || !isItemValidForSlot(9, this.freezerContents[9]))) {
+            // Grab the next valid item from the inventory, swap it into slot 9
+            for (int i = 0; i < 9; ++i) {
+                if (this.freezerContents[i] != null && isItemValidForSlot(9, this.freezerContents[i])) {
+                    ItemStack temp = this.freezerContents[9];
+                    this.freezerContents[9] = this.freezerContents[i];
+                    this.freezerContents[i] = temp;
+                    break;
                 }
             }
         }
@@ -413,7 +441,7 @@ public class TileEntityFreezer extends TileEntity implements ISidedInventory, Ti
             ItemStack item = this.getStackInSlot(i);
             NBTTagCompound tag;
             long spoilDate;
-            if (item != null && (tag = item.getTagCompound()) != null &&
+            if (item != null && (tag = item.getTagCompound()) != null && tag.hasKey("spoilDate") &&
                     (spoilDate = tag.getLong("spoilDate")) > 0) {
                 tag.setLong("spoilDate", spoilDate + timeSinceLastTick);
             }
@@ -473,7 +501,7 @@ public class TileEntityFreezer extends TileEntity implements ISidedInventory, Ti
         itemPos.yCoord += ((float) yCoord) + 0.25F;
         itemPos.zCoord += ((float) zCoord) + 0.5F;
 
-        EntityItem entityItem = (EntityItem) EntityList.createEntityOfType(EntityItem.class, worldObj, itemPos.xCoord, itemPos.yCoord, itemPos.zCoord, stack);
+        EntityItem entityItem = new EntityItem(worldObj, itemPos.xCoord, itemPos.yCoord, itemPos.zCoord, stack);
 
         Vec3 itemVel = MiscUtils.convertBlockFacingToVector(iFacing);
 
@@ -525,7 +553,7 @@ public class TileEntityFreezer extends TileEntity implements ISidedInventory, Ti
     /**
      * Returns true if automation is allowed to insert the given stack (ignoring stack size) into the given slot.
      */
-    public boolean isStackValidForSlot(int slot, ItemStack itemStack) {
+    public boolean isItemValidForSlot(int slot, ItemStack itemStack) {
         if (slot == 9) {
             if (itemStack.itemID == Item.snowball.itemID) {
                 return true;
@@ -551,14 +579,14 @@ public class TileEntityFreezer extends TileEntity implements ISidedInventory, Ti
     }
 
     @Override
-    public int[] getAccessibleSlotsFromSide(int var1) {
+    public int[] getSlotsForFace(int var1) {
         return var1 == 0 ? coolingItemIndex : ((var1 >= 2 && var1 <= 5) ? cooledItemIndex : emptyItemIndex);
     }
 
     @Override
     public boolean canInsertItem(int slot, ItemStack itemStack, int side) {
         if (side == 0 && slot == 9 || side >= 2 && side <= 5) {
-            return isStackValidForSlot(slot, itemStack);
+            return isItemValidForSlot(slot, itemStack);
         }
         return false;
     }
@@ -587,7 +615,7 @@ public class TileEntityFreezer extends TileEntity implements ISidedInventory, Ti
                 numNeighbors++;
             }
         }
-        this.numNeighbors = numNeighbors;
+        this.numNeighbors = 0;//numNeighbors;
     }
 
     @Override

@@ -10,13 +10,13 @@ import java.util.List;
 
 @Mixin(BulkRecipe.class)
 public interface BulkRecipeAccessor {
-    @Accessor
+    @Accessor(remap = false)
     List<ItemStack> getRecipeOutputStacks();
 
-    @Accessor
+    @Accessor(remap = false)
     List<ItemStack> getRecipeInputStacks();
 
-    @Accessor
+    @Accessor(remap = false)
     boolean isMetadataExclusive();
 
     @Invoker

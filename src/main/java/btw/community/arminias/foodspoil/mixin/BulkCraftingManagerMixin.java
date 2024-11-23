@@ -1,15 +1,17 @@
 package btw.community.arminias.foodspoil.mixin;
 
+import btw.community.arminias.foodspoil.BooleanFloatPair;
+import btw.community.arminias.foodspoil.FoodSpoilAddon;
 import btw.community.arminias.foodspoil.FoodSpoilMod;
 import btw.community.arminias.foodspoil.Utils;
 import btw.crafting.manager.BulkCraftingManager;
 import btw.crafting.recipe.types.BulkRecipe;
 import btw.inventory.util.InventoryUtils;
-import it.unimi.dsi.fastutil.booleans.BooleanFloatMutablePair;
 import net.minecraft.src.IInventory;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -27,7 +29,7 @@ public abstract class BulkCraftingManagerMixin {
             if (p < 0) {
                 return;
             }
-            p = Math.min(p + FoodSpoilMod.COOKING_SPOILING_BONUS, 1.0F);
+            p = Math.min(p + FoodSpoilAddon.getCookingSpoilingBonus(), 1.0F);
             tempRecipe.consumeInventoryIngredients(inventory);
             List<ItemStack> output = tempRecipe.getCraftingOutputList();
             for (int i = 0; i < output.size(); i++) {
@@ -39,6 +41,7 @@ public abstract class BulkCraftingManagerMixin {
         }
     }
 
+    @Unique
     public float getPercentageSpoiled(BulkRecipe recipe, IInventory inventory) {
         float ret = 0F;
         int count = 0;
@@ -46,12 +49,12 @@ public abstract class BulkCraftingManagerMixin {
         if (recipeInputStacks != null && !recipeInputStacks.isEmpty()) {
             for (ItemStack tempStack : recipeInputStacks) {
                 if (tempStack != null) {
-                    BooleanFloatMutablePair pair = getSpoilPercentageFromItems(inventory, tempStack.getItem().itemID, tempStack.getItemDamage(), tempStack.stackSize, ((BulkRecipeAccessor) recipe).isMetadataExclusive());
-                    if (!pair.leftBoolean()) {
+                    BooleanFloatPair pair = getSpoilPercentageFromItems(inventory, tempStack.getItem().itemID, tempStack.getItemDamage(), tempStack.stackSize, ((BulkRecipeAccessor) recipe).isMetadataExclusive());
+                    if (!pair.bool) {
                         return -1F;
                     }
-                    if (pair.rightFloat() != -1.0F) {
-                        ret += pair.rightFloat();
+                    if (pair.value != -1.0F) {
+                        ret += pair.value;
                         count++;
                     }
                 }
@@ -61,8 +64,9 @@ public abstract class BulkCraftingManagerMixin {
         return ret / count;
     }
 
-    public BooleanFloatMutablePair getSpoilPercentageFromItems(IInventory inventory, int iShiftedItemIndex, int iItemDamage, // m_iIgnoreMetadata to disregard
-                                                           int iItemCount, boolean bMetaDataExclusive) {
+    @Unique
+    public BooleanFloatPair getSpoilPercentageFromItems(IInventory inventory, int iShiftedItemIndex, int iItemDamage, // m_iIgnoreMetadata to disregard
+                                                        int iItemCount, boolean bMetaDataExclusive) {
         float ret = 0F;
         int count = 0;
         for (int iSlot = 0; iSlot < inventory.getSizeInventory(); iSlot++) {
@@ -80,9 +84,9 @@ public abstract class BulkCraftingManagerMixin {
                                 ret += p;
                                 count += iItemCount;
                             } else {
-                                return new BooleanFloatMutablePair(true, -1F);
+                                return new BooleanFloatPair(true, -1F);
                             }
-                            return new BooleanFloatMutablePair(true, ret / count);
+                            return new BooleanFloatPair(true, ret / count);
                         } else {
                             //iItemCount -= tempItemStack.stackSize;
                             float p = Utils.getPercentageSpoilTimeLeft(tempItemStack, Utils.getTotalWorldTime()) * tempItemStack.stackSize;
@@ -97,6 +101,6 @@ public abstract class BulkCraftingManagerMixin {
             }
         }
 
-        return new BooleanFloatMutablePair(false, ret);
+        return new BooleanFloatPair(false, ret);
     }
 }

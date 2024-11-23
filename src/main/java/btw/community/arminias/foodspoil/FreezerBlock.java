@@ -21,20 +21,22 @@ public class FreezerBlock extends VesselBlock {
     }
 
     @Environment(EnvType.CLIENT)
-    private final Icon[] iconBySideArray = new Icon[6];
+    private Icon[] iconBySideArray;
 
     @Override
     @Environment(EnvType.CLIENT)
     public void registerIcons( IconRegister register )
     {
-        Icon bottomIcon = register.registerIcon("freezer_bottom");
+        iconBySideArray = new Icon[6];
+
+        Icon bottomIcon = register.registerIcon("foodspoilmod:freezer_bottom");
 
         blockIcon = bottomIcon; // for hit effects
 
         iconBySideArray[0] = bottomIcon;
-        iconBySideArray[1] = register.registerIcon("freezer_top");
+        iconBySideArray[1] = register.registerIcon("foodspoilmod:freezer_top");
 
-        Icon sideIcon = register.registerIcon("freezer_side");
+        Icon sideIcon = register.registerIcon("foodspoilmod:freezer_side");
 
         iconBySideArray[2] = sideIcon;
         iconBySideArray[3] = sideIcon;

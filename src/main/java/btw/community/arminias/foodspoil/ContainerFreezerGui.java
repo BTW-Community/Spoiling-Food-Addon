@@ -4,6 +4,7 @@ import net.minecraft.src.*;
 import org.lwjgl.opengl.GL11;
 
 public class ContainerFreezerGui extends GuiContainer {
+    private static final ResourceLocation FREEZER_TEXTURE = new ResourceLocation("foodspoilmod:gui/freezer.png");
     public TileEntityFreezer freezer;
 
     public ContainerFreezerGui(InventoryPlayer par1InventoryPlayer, TileEntityFreezer par2TileEntityDispenser)
@@ -28,7 +29,7 @@ public class ContainerFreezerGui extends GuiContainer {
     protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
     {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.renderEngine.bindTexture("/gui/freezer.png");
+        this.mc.renderEngine.bindTexture(FREEZER_TEXTURE);
         int var4 = (this.width - this.xSize) / 2;
         int var5 = (this.height - this.ySize) / 2;
         this.drawTexturedModalRect(var4, var5, 0, 0, this.xSize, this.ySize);

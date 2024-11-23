@@ -18,7 +18,7 @@ public class SeedFoodItemMixin {
     @Inject(method = "onItemUse", at = @At("RETURN"))
     private void onItemUse(ItemStack itemStack, EntityPlayer player, World world, int i, int j, int k, int iFacing, float fClickX, float fClickY, float fClickZ, CallbackInfoReturnable<Boolean> cir) {
         if (cir.getReturnValue()) {
-            WorldExtension.cast(world).setBlockExtraMetadata(i, j + 1, k, 3);
+            WorldExtension.cast(world).setBlockExtraMetadata(i, j + 1, k, -1);
         }
     }
 
@@ -26,7 +26,7 @@ public class SeedFoodItemMixin {
     private void onItemUsedByBlockDispenserInject(ItemStack stack, World world, int i, int j, int k, int iFacing, CallbackInfoReturnable<Boolean> cir) {
         if (cir.getReturnValue()) {
             BlockPos targetPos = new BlockPos( i, j, k, iFacing );
-            WorldExtension.cast(world).setBlockExtraMetadata(targetPos.x, targetPos.y, targetPos.z, 3);
+            WorldExtension.cast(world).setBlockExtraMetadata(targetPos.x, targetPos.y, targetPos.z, -1);
         }
     }
 }

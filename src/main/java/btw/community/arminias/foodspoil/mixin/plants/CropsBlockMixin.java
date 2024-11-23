@@ -6,11 +6,10 @@ import btw.community.arminias.metadata.extension.WorldExtension;
 import btw.item.util.ItemUtils;
 import btw.community.arminias.foodspoil.FoodSpoilAddon;
 import btw.community.arminias.foodspoil.FoodSpoilMod;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.Material;
-import net.minecraft.src.World;
+import net.minecraft.src.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -34,27 +33,30 @@ public abstract class CropsBlockMixin extends PlantsBlock {
             // Don't update if the plant is generated and not planted
             if (extra == 0) {
                 return;
+            } else if (extra == -1) {
+                // Generate a new spoil time
+                setSpoilAtTime(world, i, j, k, world.getTotalWorldTime() + FoodSpoilAddon.getPlantSpoilAge() * 24000L * (getIsFertilizedForPlantGrowth(world, i, j - 1, k) ? 2 : 1));
             }
-            if ((extra >> 1) > FoodSpoilMod.PLANT_SPOIL_AGE) {
+            //if ((extra >> 1) > FoodSpoilMod.PLANT_SPOIL_AGE) {
+            else if (getSpoilAtTime(extra) < world.getTotalWorldTime()) {
                 // Kill the plant
                 world.setBlockToAir(i, j, k);
                 ItemUtils.dropStackAsIfBlockHarvested(world, i, j, k, new ItemStack(FoodSpoilAddon.spoiledCrop));
                 ci.cancel();
-            } else {
+            } /*else {
                 updateHasUpdatedToday(world, i, j, k, extra);
-            }
+            }*/
         }
     }
 
-    private void updateHasUpdatedToday(World world, int i, int j, int k, int extra) {
-        int timeOfDay = (int)(world.worldInfo.getWorldTime() % 24000L);
-        boolean hasUpdatedToday = (extra & 1) == 1;
-        if (hasUpdatedToday && timeOfDay > 14000 && timeOfDay < 22000) {
-            WorldExtension.cast(world).setBlockExtraMetadata(i, j, k, extra & 0xFFFFFFFE);
-        }
-        else if (!hasUpdatedToday && (timeOfDay > 22000 || timeOfDay < 14000)) {
-            WorldExtension.cast(world).setBlockExtraMetadata(i, j, k, (extra + 2) | 1);
-        }
+    @Unique
+    private long getSpoilAtTime(int extra) {
+        return (long) extra << FoodSpoilMod.SPOIL_TIME_QUANTIZATION_SHIFT;
+    }
+
+    @Unique
+    private void setSpoilAtTime(World world, int i, int j, int k, long spoilAtTime) {
+        WorldExtension.cast(world).setBlockExtraMetadata(i, j, k, (int) (spoilAtTime >>> FoodSpoilMod.SPOIL_TIME_QUANTIZATION_SHIFT));
     }
 
     // TODO Remove

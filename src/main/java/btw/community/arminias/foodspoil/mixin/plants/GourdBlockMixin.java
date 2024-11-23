@@ -9,9 +9,11 @@ import btw.community.arminias.foodspoil.FoodSpoilAddon;
 import btw.community.arminias.foodspoil.FoodSpoilMod;
 import net.minecraft.src.*;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.Random;
 
@@ -26,81 +28,53 @@ public abstract class GourdBlockMixin extends FallingBlock {
     private void updateTick(World world, int i, int j, int k, Random rand, CallbackInfo ci) {
         // Get extra metadata using extension
         int extra = WorldExtension.cast(world).getBlockExtraMetadata(i, j, k);
-
+        //System.out.println(extra);
         // Don't update if the plant is generated and not planted
         if (extra == 0) {
             return;
-        }
-        if ((extra >> 1) > FoodSpoilMod.PLANT_SPOIL_AGE) {
+        }/* else if (extra == -1) {
+            // Generate a new spoil time
+            setSpoilAtTime(world, i, j, k, world.getTotalWorldTime() + FoodSpoilAddon.getPlantSpoilAge() * 24000L);
+        }*/
+        //if ((extra >> 1) > FoodSpoilMod.PLANT_SPOIL_AGE) {
+        else if (getSpoilAtTime(extra) < world.getTotalWorldTime()) {
             // Kill the plant
             world.setBlockToAir(i, j, k);
             ItemUtils.dropStackAsIfBlockHarvested(world, i, j, k, new ItemStack(FoodSpoilAddon.spoiledCrop));
             ci.cancel();
-        } else {
+        } /*else {
             updateHasUpdatedToday(world, i, j, k, extra);
-        }
-    }
-
-    private void updateHasUpdatedToday(World world, int i, int j, int k, int extra) {
-        int timeOfDay = (int)(world.worldInfo.getWorldTime() % 24000L);
-        boolean hasUpdatedToday = (extra & 1) == 1;
-        if (hasUpdatedToday && timeOfDay > 14000 && timeOfDay < 22000) {
-            WorldExtension.cast(world).setBlockExtraMetadata(i, j, k, extra & 0xFFFFFFFE);
-        }
-        else if (!hasUpdatedToday && (timeOfDay > 22000 || timeOfDay < 14000)) {
-            WorldExtension.cast(world).setBlockExtraMetadata(i, j, k, (extra + 2) | 1);
-        }
+        }*/
     }
 
     @Override
-    public void onBlockPlacedBy(World par1World, int par2, int par3, int par4, EntityLiving par5EntityLiving, ItemStack par6ItemStack) {
+    public void onBlockPlacedBy(World par1World, int par2, int par3, int par4, EntityLivingBase par5EntityLiving, ItemStack par6ItemStack) {
         super.onBlockPlacedBy(par1World, par2, par3, par4, par5EntityLiving, par6ItemStack);
         // Get spoil time from item tag compound
         if (par6ItemStack.stackTagCompound != null) {
             long spoilDate = par6ItemStack.stackTagCompound.getLong("spoilDate");
-            // Calculate extra metadata from spoil time
-            float fraction = 1 - (float)(spoilDate - par1World.getTotalWorldTime()) / (float) FoodType.getDecayTimeFast(par6ItemStack.itemID);
-            int extra = ((int)(1 + fraction * FoodSpoilMod.PLANT_SPOIL_AGE) << 1) | 1;
-            // Set extra metadata using extension
-            WorldExtension.cast(par1World).setBlockExtraMetadata(par2, par3, par4, extra);
+            setSpoilAtTime(par1World, par2, par3, par4, spoilDate);
         }
-
     }
 
     @Override
-    public void dropBlockAsItemWithChance(World par1World, int par2, int par3, int par4, int par5, float par6, int par7) {
-    }
-
-    @Override
-    public void onBlockHarvested(World par1World, int par2, int par3, int par4, int par5, EntityPlayer par6EntityPlayer) {
-        if (!par1World.isRemote)
-        {
-            int par7 = EnchantmentHelper.getFortuneModifier(par6EntityPlayer);
-            int var8 = this.quantityDroppedWithBonus(par7, par1World.rand);
-            float par6 = 1.0F;
-
-            for (int var9 = 0; var9 < var8; ++var9)
-            {
-                if (par1World.rand.nextFloat() <= par6)
-                {
-                    int var10 = this.idDropped(par5, par1World.rand, par7);
-
-                    if (var10 > 0)
-                    {
-                        ItemStack stack = new ItemStack(var10, 1, this.damageDropped(par5));
-                        // Get extra metadata using extension
-                        int extra = WorldExtension.cast(par1World).getBlockExtraMetadata(par2, par3, par4);
-                        // Set item spoil time as fraction of max spoil time using extra metadata
-                        float fraction = 1 - (float)(extra >> 1) / (float)FoodSpoilMod.PLANT_SPOIL_AGE;
-                        if (stack.stackTagCompound == null) {
-                            stack.setTagCompound(new NBTTagCompound());
-                        }
-                        stack.stackTagCompound.setLong("spoilDate", (long)(fraction * FoodType.getDecayTimeFast(stack.itemID)) + par1World.getTotalWorldTime());
-                        this.dropBlockAsItem_do(par1World, par2, par3, par4, stack);
-                    }
-                }
-            }
+    public void dropBlockAsItem_do(World par1World, int par2, int par3, int par4, ItemStack par5ItemStack) {
+        // Get extra metadata using extension
+        int extra = WorldExtension.cast(par1World).getBlockExtraMetadata(par2, par3, par4);
+        if (extra == 0) {
+            super.dropBlockAsItem_do(par1World, par2, par3, par4, par5ItemStack);
+            return;
         }
+        // Set item spoil time as fraction of max spoil time using extra metadata
+        if (par5ItemStack.stackTagCompound == null) {
+            par5ItemStack.setTagCompound(new NBTTagCompound());
+        }
+        par5ItemStack.stackTagCompound.setLong("spoilDate", getSpoilAtTime(extra));
+        par5ItemStack.stackTagCompound.setLong("creationDate", par1World.getTotalWorldTime());
+
+        WorldExtension.cast(par1World).setBlockExtraMetadata(par2, par3, par4, 0);
+
+        super.dropBlockAsItem_do(par1World, par2, par3, par4, par5ItemStack);
     }
 
     @Override
@@ -109,14 +83,41 @@ public abstract class GourdBlockMixin extends FallingBlock {
         if (stack != null) {
             // Get extra metadata using extension
             int extra = WorldExtension.cast(world).getBlockExtraMetadata(i, j, k);
+            if (extra == 0) {
+                return stack;
+            }
             // Set item spoil time as fraction of max spoil time using extra metadata
-            float fraction = 1 - (float)(extra >> 1) / (float)FoodSpoilMod.PLANT_SPOIL_AGE;
             if (stack.stackTagCompound == null) {
                 stack.setTagCompound(new NBTTagCompound());
             }
-            stack.stackTagCompound.setLong("spoilDate", (long)(fraction * FoodType.getDecayTimeFast(stack.itemID)) + world.getTotalWorldTime());
+            stack.stackTagCompound.setLong("spoilDate", getSpoilAtTime(extra));
+            stack.stackTagCompound.setLong("creationDate", world.getTotalWorldTime());
+
+            WorldExtension.cast(world).setBlockExtraMetadata(i, j, k, 0);
         }
         return stack;
+    }
+
+    // TODO Maybe adapt this to use the spoil time of the gourd that gets exploded, dunno, would require changing stuff somewhere else as well
+    /*@Inject(method = "explode", at = @At(value = "INVOKE", target = "Lnet/minecraft/src/EntityItem;<init>(Lnet/minecraft/src/World;DDDLnet/minecraft/src/ItemStack;)V"), locals = LocalCapture.CAPTURE_FAILHARD)
+    private void explode(World world, double posX, double posY, double posZ, CallbackInfo ci, Item itemToDrop, int iTempCount, ItemStack itemStack) {
+        // Get extra metadata using extension
+        int extra = WorldExtension.cast(world).getBlockExtraMetadata((int) posX, (int) posY, (int) posZ);
+        // Set item spoil time as fraction of max spoil time using extra metadata
+        if (itemStack.stackTagCompound == null) {
+            itemStack.setTagCompound(new NBTTagCompound());
+        }
+        itemStack.stackTagCompound.setLong("spoilDate", getSpoilAtTime(extra));
+    }*/
+
+    @Unique
+    private long getSpoilAtTime(int extra) {
+        return (long) extra << FoodSpoilMod.SPOIL_TIME_QUANTIZATION_SHIFT;
+    }
+
+    @Unique
+    private void setSpoilAtTime(World world, int i, int j, int k, long spoilAtTime) {
+        WorldExtension.cast(world).setBlockExtraMetadata(i, j, k, (int) (spoilAtTime >>> FoodSpoilMod.SPOIL_TIME_QUANTIZATION_SHIFT));
     }
 
     // TODO Remove

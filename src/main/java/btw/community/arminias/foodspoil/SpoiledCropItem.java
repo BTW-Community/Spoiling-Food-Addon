@@ -7,8 +7,8 @@ import net.minecraft.src.Item;
 public class SpoiledCropItem extends FoodItem {
     public SpoiledCropItem(int iItemID )
     {
-        super(iItemID, 3, 0F, false, "spoiledcropitem");
-
+        super(iItemID, 3, 0F, false, "foodspoilmod.spoiledcropitem");
+        setTextureName("foodspoilmod:spoiledcropitem");
         setIncreasedFoodPoisoningEffect();
         setAsBasicHerbivoreFood();
         setAsBasicPigFood();

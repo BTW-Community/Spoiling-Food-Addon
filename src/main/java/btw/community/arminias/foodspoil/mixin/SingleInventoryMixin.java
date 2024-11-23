@@ -20,7 +20,7 @@ public class SingleInventoryMixin extends TileEntity {
     private ItemStack perClassInventory;
 
     @Inject(method = "updateEntity", at=@At("RETURN"))
-    private void addFoodDecay(CallbackInfo ci) {
+    public void addFoodDecay(CallbackInfo ci) {
         if (this.worldObj != null && this.perClassInventory != null) {
             if (Utils.isBeyondSpoilDate(this.perClassInventory, this.worldObj.getTotalWorldTime())) {
                 perClassInventory = FoodType.doItemDecayFast(perClassInventory);

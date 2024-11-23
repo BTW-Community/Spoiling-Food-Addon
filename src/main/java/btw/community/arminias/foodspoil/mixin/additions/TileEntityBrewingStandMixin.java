@@ -1,10 +1,13 @@
 package btw.community.arminias.foodspoil.mixin.additions;
 
 import btw.community.arminias.foodspoil.FoodSpoilAddon;
+import btw.item.BTWItems;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
+import net.minecraft.src.PotionHelper;
 import net.minecraft.src.TileEntityBrewingStand;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -12,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(TileEntityBrewingStand.class)
 public class TileEntityBrewingStandMixin {
+
     @Redirect(method = "canBrew", at = @At(value = "FIELD", target = "Lnet/minecraft/src/ItemStack;itemID:I", ordinal = 1))
     private int canBrew(ItemStack itemStack) {
         return itemStack.itemID == FoodSpoilAddon.sleepingPotion.itemID ? Item.potion.itemID : itemStack.itemID;

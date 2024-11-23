@@ -8,18 +8,18 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(RenderLiving.class)
+@Mixin(RendererLivingEntity.class)
 public abstract class RenderLivingMixin {
 
     @Shadow protected abstract float interpolateRotation(float par1, float par2, float par3);
 
-    @Shadow protected abstract float getDeathMaxRotation(EntityLiving par1EntityLiving);
+    //@Shadow protected abstract float getDeathMaxRotation(EntityLiving par1EntityLiving);
 
-    @Inject(method = "getColorMultiplier", at = @At("HEAD"), cancellable = true)
-    private void getColorMultiplier(EntityLiving par1EntityLiving, float par2, float par3, CallbackInfoReturnable<Integer> cir) {
-        if (par1EntityLiving instanceof EntityAnimal) {
+    /*@Inject(method = "getColorMultiplier", at = @At("HEAD"), cancellable = true)
+    private void getColorMultiplier(EntityLivingBase par1EntityLiving, float par2, float par3, CallbackInfoReturnable<Integer> cir) {
+        if (par1EntityLiving instanceof EntityHorse) {
             int age = par1EntityLiving.getDataWatcher().getWatchableObjectInt(FoodSpoilMod.ANIMAL_AGE_WATCHER_ID);
-            if (age > FoodSpoilMod.ANIMAL_OLD_AGE) {
+            if (age > FoodSpoilAddon.getAnimalOldAge()) {
                 if (((EntityAnimal) par1EntityLiving).isStarving()) {
                     cir.setReturnValue(0x77777777);
                 }
@@ -28,7 +28,7 @@ public abstract class RenderLivingMixin {
                 }
             }
         }
-    }
+    }*/
     /*@Inject(method = "doRenderLiving", at = @At(value = "INVOKE", target = "Lnet/minecraft/src/RenderLiving;rotateCorpse(Lnet/minecraft/src/EntityLiving;FFF)V"))
     private void doSleepingRotation(EntityLiving par1EntityLiving, double par22, double par44, double par66, float par88, float par99, CallbackInfo ci) {
         if (par1EntityLiving.deathTime == 0 && par1EntityLiving.isPotionActive(FoodSpoilAddon.sleeping) && !(par1EntityLiving instanceof EntityPlayer)) {

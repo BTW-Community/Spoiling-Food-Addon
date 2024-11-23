@@ -67,9 +67,9 @@ public class ContainerFreezer extends Container
         }
     }
 
-    public void addCraftingToCrafters(ICrafting par1ICrafting)
+    public void onCraftGuiOpened(ICrafting par1ICrafting)
     {
-        super.addCraftingToCrafters(par1ICrafting);
+        super.onCraftGuiOpened(par1ICrafting);
         par1ICrafting.sendProgressBarUpdate(this, 1, this.tileEntityFreezer.freezeTime);
         par1ICrafting.sendProgressBarUpdate(this, 2, this.tileEntityFreezer.currentItemFreezeTime);
         par1ICrafting.sendProgressBarUpdate(this, 3, this.tileEntityFreezer.overflowCounter);

@@ -14,18 +14,19 @@ import java.util.Map;
 import static btw.util.MiscUtils.TICKS_PER_GAME_DAY;
 
 public enum FoodType {
-    MEAT(5 * TICKS_PER_GAME_DAY, Item.rottenFlesh),
-    VEGETABLE(8 * TICKS_PER_GAME_DAY, BTWItems.foulFood),
-    FRUIT(8 * TICKS_PER_GAME_DAY, BTWItems.foulFood),
-    BREAD(9 * TICKS_PER_GAME_DAY, BTWItems.foulFood),
-    FISH((long) (3 * TICKS_PER_GAME_DAY), BTWItems.foulFood),
-    MILK(6 * TICKS_PER_GAME_DAY, Item.bucketEmpty),
-    EGG(6 * TICKS_PER_GAME_DAY, BTWItems.foulFood),
-    SWEET(9 * TICKS_PER_GAME_DAY, BTWItems.foulFood),
-    MUSHROOM(6 * TICKS_PER_GAME_DAY, BTWItems.foulFood),
-    PLANT(9 * TICKS_PER_GAME_DAY, null),
+    MEAT(TICKS_PER_GAME_DAY, Item.rottenFlesh),
+    VEGETABLE(TICKS_PER_GAME_DAY, BTWItems.foulFood),
+    FRUIT(TICKS_PER_GAME_DAY, BTWItems.foulFood),
+    BREAD(TICKS_PER_GAME_DAY, BTWItems.foulFood),
+    FISH(TICKS_PER_GAME_DAY, BTWItems.foulFood),
+    MILK(TICKS_PER_GAME_DAY, Item.bucketEmpty),
+    EGG(TICKS_PER_GAME_DAY, BTWItems.foulFood),
+    SWEET(TICKS_PER_GAME_DAY, BTWItems.foulFood),
+    MUSHROOM(TICKS_PER_GAME_DAY, null),
+    SOUP(TICKS_PER_GAME_DAY, Item.bowlEmpty),
+    PLANT(TICKS_PER_GAME_DAY, FoodSpoilAddon.spoiledCrop),
     UNSPOILABLE(Long.MAX_VALUE, null),
-    OTHER(9 * TICKS_PER_GAME_DAY, null),
+    OTHER(TICKS_PER_GAME_DAY, null),
     OVERRIDE(9999L, null);
 
     private static final ArrayList<Integer> MEAT_ITEMS = new ArrayList<>();
@@ -37,6 +38,7 @@ public enum FoodType {
     private static final ArrayList<Integer> EGG_ITEMS = new ArrayList<>();
     private static final ArrayList<Integer> SWEET_ITEMS = new ArrayList<>();
     private static final ArrayList<Integer> MUSHROOM_ITEMS = new ArrayList<>();
+    private static final ArrayList<Integer> SOUP_ITEMS = new ArrayList<>();
     private static final ArrayList<Integer> PLANT_ITEMS = new ArrayList<>();
     private static final ArrayList<Integer> UNSPOILABLE_ITEMS = new ArrayList<>();
     private static final ArrayList<Integer> OTHER_ITEMS = new ArrayList<>();
@@ -51,11 +53,11 @@ public enum FoodType {
     static {
         MEAT_ITEMS.addAll(Arrays.asList(
                 Item.porkRaw.itemID, Item.porkCooked.itemID, Item.beefRaw.itemID, Item.beefCooked.itemID, Item.chickenRaw.itemID, Item.chickenCooked.itemID,
-                BTWItems.burnedMeat.itemID, BTWItems.chickenSoup.itemID, BTWItems.batWing.itemID, BTWItems.curedMeat.itemID, BTWItems.kibble.itemID,
-                BTWItems.heartyStew.itemID, BTWItems.rawKebab.itemID, BTWItems.cookedKebab.itemID, BTWItems.rawMutton.itemID, BTWItems.cookedMutton.itemID,
+                BTWItems.burnedMeat.itemID, BTWItems.batWing.itemID, BTWItems.curedMeat.itemID, BTWItems.kibble.itemID,
+                BTWItems.rawKebab.itemID, BTWItems.cookedKebab.itemID, BTWItems.rawMutton.itemID, BTWItems.cookedMutton.itemID,
                 BTWItems.rawWolfChop.itemID, BTWItems.cookedWolfChop.itemID, BTWItems.rawMysteryMeat.itemID, BTWItems.cookedMysteryMeat.itemID,
                 BTWItems.rawLiver.itemID, BTWItems.cookedLiver.itemID, BTWItems.steakAndPotatoes.itemID, BTWItems.steakDinner.itemID,
-                BTWItems.wolfDinner.itemID, BTWItems.porkDinner.itemID, BTWItems.tastySandwich.itemID)
+                BTWItems.wolfDinner.itemID, BTWItems.porkDinner.itemID, BTWItems.tastySandwich.itemID, BTWItems.rawCheval.itemID, BTWItems.cookedCheval.itemID)
         );
         VEGETABLE_ITEMS.addAll(Arrays.asList(
                 Item.carrot.itemID, Item.potato.itemID, Item.bakedPotato.itemID, BTWItems.carrot.itemID, BTWItems.cookedCarrot.itemID, BTWItems.boiledPotato.itemID
@@ -72,7 +74,7 @@ public enum FoodType {
                 Item.fishRaw.itemID, Item.fishCooked.itemID)
         );
         MILK_ITEMS.addAll(Arrays.asList(
-                Item.bucketMilk.itemID, BTWItems.milkChocolateBucket.itemID, BTWItems.chowder.itemID
+                Item.bucketMilk.itemID, BTWItems.milkChocolateBucket.itemID
                 )
         );
         EGG_ITEMS.addAll(Arrays.asList(
@@ -84,7 +86,10 @@ public enum FoodType {
                 Item.cookie.itemID, Item.pumpkinPie.itemID, Item.cake.itemID, BTWItems.chocolate.itemID, BTWItems.donut.itemID)
         );
         MUSHROOM_ITEMS.addAll(Arrays.asList(
-                Item.bowlSoup.itemID, BTWItems.redMushroom.itemID, BTWItems.brownMushroom.itemID)
+                BTWItems.redMushroom.itemID, BTWItems.brownMushroom.itemID)
+        );
+        SOUP_ITEMS.addAll(Arrays.asList(
+                Item.bowlSoup.itemID, BTWItems.chickenSoup.itemID, BTWItems.heartyStew.itemID, BTWItems.chowder.itemID)
         );
         PLANT_ITEMS.addAll(Arrays.asList(
                 Item.wheat.itemID, BTWItems.wheat.itemID, Item.melonSeeds.itemID, Item.pumpkinSeeds.itemID, Item.seeds.itemID, Item.netherStalkSeeds.itemID,
@@ -238,6 +243,8 @@ public enum FoodType {
             return SWEET;
         } else if (MUSHROOM_ITEMS.contains(item.itemID)) {
             return MUSHROOM;
+        } else if (SOUP_ITEMS.contains(item.itemID)) {
+            return SOUP;
         } else if (PLANT_ITEMS.contains(item.itemID)) {
             return PLANT;
         } else if (UNSPOILABLE_ITEMS.contains(item.itemID)) {
@@ -333,6 +340,9 @@ public enum FoodType {
             case MUSHROOM:
                 MUSHROOM_ITEMS.add(item.itemID);
                 break;
+            case SOUP:
+                SOUP_ITEMS.add(item.itemID);
+                break;
             case PLANT:
                 PLANT_ITEMS.add(item.itemID);
                 break;
@@ -414,6 +424,14 @@ public enum FoodType {
         isBuilt = true;
     }
 
+    /**
+     * Rebuilds the registry. Only used internally. Register food types at the start of the game instead.
+     */
+    static void rebuild() {
+        isBuilt = false;
+        build();
+    }
+
     private static final class FoodTypeRecord {
         public final FoodType foodType;
         public final long decayTime;
@@ -421,7 +439,7 @@ public enum FoodType {
 
         private FoodTypeRecord(FoodType foodType, long decayTime, Item decayItem) {
             this.foodType = foodType;
-            this.decayTime = decayTime;
+            this.decayTime = (long) (decayTime * (foodType != UNSPOILABLE ? FoodSpoilAddon.getDecayMultiplier(foodType) : 1));
             this.decayItem = decayItem;
         }
     }

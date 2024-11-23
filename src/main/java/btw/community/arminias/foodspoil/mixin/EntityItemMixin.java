@@ -1,5 +1,6 @@
 package btw.community.arminias.foodspoil.mixin;
 
+import btw.community.arminias.foodspoil.FoodSpoilAddon;
 import btw.community.arminias.foodspoil.FoodSpoilMod;
 import btw.community.arminias.foodspoil.FoodType;
 import btw.community.arminias.foodspoil.Utils;
@@ -33,12 +34,12 @@ public abstract class EntityItemMixin extends Entity {
             NBTTagCompound tag;
             long spoilDate;
             long totalWorldTime = this.worldObj.getTotalWorldTime();
-            if (item != null && totalWorldTime % 10 == 0 && (tag = item.getTagCompound()) != null &&
+            if (item != null && totalWorldTime % 10 == 0 && (tag = item.getTagCompound()) != null && tag.hasKey("spoilDate") &&
                     (spoilDate = tag.getLong("spoilDate")) > 0 && lastTick != 0) {
                 // Check if the item is in or on ice or snow
                 Block block = Block.blocksList[this.worldObj.getBlockId((int) this.posX, (int) this.posY, (int) this.posZ)];
                 if (Utils.isCoolingBlock(block)) {
-                    spoilDate = (long) (spoilDate + (totalWorldTime - lastTick) * FoodSpoilMod.WORLD_ICE_PRESERVATION_FACTOR);
+                    spoilDate = (long) (spoilDate + (totalWorldTime - lastTick) * FoodSpoilAddon.getWorldIcePreservationFactor());
                     tag.setLong("spoilDate", spoilDate);
                 }
                 else {
@@ -47,7 +48,7 @@ public abstract class EntityItemMixin extends Entity {
                                 (int) (posX + Facing.offsetsXForSide[i]),
                                 (int) (posY + Facing.offsetsYForSide[i]),
                                 (int) (posZ + Facing.offsetsZForSide[i]))])) {
-                            spoilDate = (long) (spoilDate + (totalWorldTime - lastTick) * FoodSpoilMod.WORLD_ICE_PRESERVATION_FACTOR);
+                            spoilDate = (long) (spoilDate + (totalWorldTime - lastTick) * FoodSpoilAddon.getWorldIcePreservationFactor());
                             tag.setLong("spoilDate", spoilDate);
                             /*System.out.println("Block: " + Block.blocksList[worldObj.getBlockId(
                                     (int) (posX + Facing.offsetsXForSide[i]),

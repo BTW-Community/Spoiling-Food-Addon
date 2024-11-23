@@ -1,0 +1,6 @@
+accessWidener v1 named
+
+accessible class net/minecraft/src/SlotBrewingStandPotion
+accessible field net/minecraft/src/ItemPotion effectCache Ljava/util/HashMap;
+accessible method net/minecraft/src/Block dropBlockAsItem_do (Lnet/minecraft/src/World;IIILnet/minecraft/src/ItemStack;)V
+accessible method net/minecraft/src/Block onStartFalling (Lnet/minecraft/src/EntityFallingSand;)V

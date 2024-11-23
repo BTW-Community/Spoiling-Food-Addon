@@ -1,6 +1,0 @@
-accessWidener v1 named
-
-accessible method net.minecraft.src.NBTBase write (Ljava/io/DataOutput;)V
-accessible method net.minecraft.src.NBTBase load (Ljava/io/DataInput;)V
-
-accessible class net.minecraft.src.SlotBrewingStandPotion

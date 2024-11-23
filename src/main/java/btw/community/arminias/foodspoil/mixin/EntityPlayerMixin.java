@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(EntityPlayer.class)
-public abstract class EntityPlayerMixin extends EntityLiving {
+public abstract class EntityPlayerMixin extends EntityLivingBase {
 
     public EntityPlayerMixin(World par1World) {
         super(par1World);

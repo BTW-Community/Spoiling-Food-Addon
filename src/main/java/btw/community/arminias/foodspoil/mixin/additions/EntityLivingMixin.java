@@ -15,67 +15,10 @@ import java.util.HashMap;
 
 @Mixin(EntityLiving.class)
 public abstract class EntityLivingMixin extends Entity {
-    @Shadow protected HashMap activePotionsMap;
-
     public EntityLivingMixin(World par1World) {
         super(par1World);
     }
 
     @Shadow protected abstract boolean isAIEnabled();
 
-    @Shadow protected double newRotationPitch;
-
-    @Shadow public abstract boolean isPotionActive(Potion par1Potion);
-
-    @Shadow public abstract void removePotionEffect(int par1);
-
-    @Shadow public abstract PotionEffect getActivePotionEffect(Potion par1Potion);
-
-    @Inject(method = "isMovementBlocked", at = @At(value = "RETURN"), cancellable = true)
-    private void isMovementBlockedInject(CallbackInfoReturnable<Boolean> cir) {
-        if (this.isPotionActive(FoodSpoilAddon.sleeping)) {
-            cir.setReturnValue(true);
-        }
-    }
-
-    @Redirect(method = "entityLivingOnLivingUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/src/EntityLiving;isAIEnabled()Z"))
-    private boolean isAIEnabledRedirect(EntityLiving entityLiving) {
-        return this.isAIEnabled() && !this.isPotionActive(FoodSpoilAddon.sleeping);
-    }
-
-    @Inject(method = "attackEntityFrom", at = @At("HEAD"))
-    private void attackEntityFrom(DamageSource par1DamageSource, int par2, CallbackInfoReturnable<Boolean> cir) {
-        if (this.isPotionActive(FoodSpoilAddon.sleeping) && this.getActivePotionEffect(FoodSpoilAddon.sleeping).getAmplifier() < 1) {
-            this.removePotionEffect(FoodSpoilAddon.sleeping.id);
-        }
-    }
-
-    @Inject(method = "entityLivingOnLivingUpdate", at = @At(value = "HEAD"))
-    private void entityLivingOnLivingUpdateInject(CallbackInfo ci) {
-        /*if (!((Object) this instanceof EntityPlayer) && this.activePotionsMap.containsKey(FoodSpoilAddon.sleeping.id)) {
-            this.newRotationPitch = 0.35F;
-            this.newPosX = this.posX;
-            this.newPosY = this.posY;
-            this.newPosZ = this.posZ;
-            this.newPosRotationIncrements += 3;
-            /*if (!this.worldObj.isRemote) {
-                for (Object object : ((WorldServer) this.worldObj).playerEntities) {
-                    System.out.println("Sleeping");
-                    EntityPlayerMP player = (EntityPlayerMP) object;
-                    player.playerNetServerHandler.sendPacketToPlayer(new Packet32EntityLook(this.entityId, (byte) ((this.rotationYaw * 360F) / 256F), (byte) 65));
-                }
-            }*/
-            //this.rotationYaw = 89.77F;
-        /*} else if (this.newRotationPitch == 0.35F) {
-            this.newRotationPitch = 0F;
-            this.newPosRotationIncrements += 3;
-            //this.rotationYaw = 0F;
-        }*/
-        if (worldObj.isRemote) {
-            if (!((Object) this instanceof EntityPlayer) && dataWatcher.getWatchableObjectInt(8) == PotionHelper.calcPotionLiquidColor(Collections.singletonList(new PotionEffect(FoodSpoilAddon.sleeping.getId(), 1, 0)))) {
-                this.newRotationPitch = 80F;
-                //this.rotationPitch = 90F;
-            }
-        }
-    }
 }

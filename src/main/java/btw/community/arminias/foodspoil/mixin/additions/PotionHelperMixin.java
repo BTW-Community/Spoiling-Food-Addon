@@ -8,6 +8,7 @@ import net.minecraft.src.PotionHelper;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -22,6 +23,7 @@ import static net.minecraft.src.PotionHelper.getPotionEffects;
 @Mixin(PotionHelper.class)
 public abstract class PotionHelperMixin {
     @Shadow @Final public static String redstoneEffect;
+    @Unique
     private static final HashMap<Integer, List> redirectCache = new HashMap<>();
 
     @Environment(EnvType.CLIENT)

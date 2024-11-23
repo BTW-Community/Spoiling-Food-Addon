@@ -17,7 +17,7 @@ public abstract class EntityMobMixin extends EntityLiving {
     }
 
     @Inject(method = "entityMobAttackEntityFrom", at = @At("HEAD"))
-    private void entityMobAttackEntityFrom(DamageSource par1DamageSource, int par2, CallbackInfoReturnable<Boolean> cir) {
+    private void entityMobAttackEntityFrom(DamageSource par1DamageSource, float par2, CallbackInfoReturnable<Boolean> cir) {
         if (this.isPotionActive(FoodSpoilAddon.sleeping) && this.getActivePotionEffect(FoodSpoilAddon.sleeping).getAmplifier() < 1) {
             this.removePotionEffect(FoodSpoilAddon.sleeping.id);
         }

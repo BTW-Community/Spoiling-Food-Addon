@@ -1,7 +1,6 @@
 package btw.community.arminias.foodspoil.mixin;
 
 import btw.community.arminias.foodspoil.FoodType;
-import net.minecraft.client.Minecraft;
 import net.minecraft.src.*;
 import org.lwjgl.opengl.GL11;
 import org.spongepowered.asm.mixin.Mixin;
@@ -20,7 +19,7 @@ public abstract class RenderItemMixin {
     }
 
     @Inject(method = "renderItemAndEffectIntoGUI", at = @At("TAIL"))
-    public void renderItemAndEffectIntoGUI(FontRenderer par1FontRenderer, RenderEngine par2RenderEngine, ItemStack itemStack, int par4, int par5, CallbackInfo ci) {
+    public void renderItemAndEffectIntoGUI(FontRenderer par1FontRenderer, TextureManager par2TextureManager, ItemStack itemStack, int par4, int par5, CallbackInfo ci) {
         if (itemStack != null && itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("spoilDate")) { //&& !(Minecraft.getMinecraft().currentScreen instanceof ContainerFreezerGui)) {
             long spoilDate = itemStack.getTagCompound().getLong("spoilDate");
             long totalWorldTime = Minecraft.getMinecraft().theWorld.getTotalWorldTime();

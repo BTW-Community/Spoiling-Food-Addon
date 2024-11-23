@@ -2,6 +2,8 @@ package btw.community.arminias.foodspoil.mixin;
 
 import btw.community.arminias.foodspoil.FoodType;
 import btw.community.arminias.foodspoil.Utils;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
@@ -18,6 +20,7 @@ public abstract class ItemMixin {
         super();
     }
 
+    @Environment(EnvType.CLIENT)
     @Inject(method = "addInformation", at = @At(value = "HEAD"))
     public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4, CallbackInfo ci) {
         FoodType foodType = FoodType.getFoodTypeFast(itemStack.itemID);

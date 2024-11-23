@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(EntityPlayer.class)
-public abstract class EntityPlayerMixin extends EntityLiving {
+public abstract class EntityPlayerMixin extends EntityLivingBase {
     @Shadow public abstract void wakeUpPlayer(boolean par1, boolean par2, boolean par3);
 
     @Shadow public ChunkCoordinates playerLocation;
