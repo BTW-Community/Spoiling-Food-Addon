@@ -9,8 +9,8 @@ import static net.minecraft.src.PotionHelper.getPotionEffects;
 
 public class SleepingPotionItem extends ItemPotion {
 
-    public final PotionEffect sleepingEffect = new PotionEffect(FoodSpoilAddon.sleeping.id, 3000, 0);
-    public final PotionEffect sleepingEffect2 = new PotionEffect(FoodSpoilAddon.sleeping.id, 18000, 1);
+    //public final PotionEffect sleepingEffect = new PotionEffect(FoodSpoilAddon.sleeping.id, 3000, 0);
+    //public final PotionEffect sleepingEffect2 = new PotionEffect(FoodSpoilAddon.sleeping.id, 18000, 1);
 
     public SleepingPotionItem(int itemID) {
         super(itemID);

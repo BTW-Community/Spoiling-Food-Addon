@@ -16,13 +16,13 @@ public class ItemFoodMixin {
         //System.out.println("ItemFoodMixin.onEatenInject");
         float p = Utils.getPercentageSpoilTimeLeft(par1ItemStack, par2World.getTotalWorldTime());
         if (p > 0 && p <= FoodSpoilAddon.getFoodGettingBadPercentage()) {
-            par3EntityPlayer.addPotionEffect(FoodSpoilAddon.sleepingPotion.sleepingEffect);
-            if (par3EntityPlayer.isPotionActive(FoodSpoilAddon.sleeping.id)) {
-                par3EntityPlayer.addPotionEffect(new PotionEffect(Potion.confusion.getId(), 1200, 0, false));
-            }
             if (par3EntityPlayer.isPotionActive(FoodSpoilAddon.sleeping.id) && par3EntityPlayer.isPotionActive(Potion.confusion.getId())) {
                 par3EntityPlayer.addPotionEffect(new PotionEffect(Potion.blindness.getId(), 1200, 0, false));
             }
+            if (par3EntityPlayer.isPotionActive(FoodSpoilAddon.sleeping.id)) {
+                par3EntityPlayer.addPotionEffect(new PotionEffect(Potion.confusion.getId(), 1200, 0, false));
+            }
+            par3EntityPlayer.addPotionEffect(new PotionEffect(FoodSpoilAddon.sleeping.id, 3000, 0));
         }
     }
 
