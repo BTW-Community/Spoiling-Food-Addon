@@ -1,8 +1,8 @@
 package btw.community.arminias.foodspoil.mixin;
 
 
+import btw.block.tileentity.BarkBoxTileEntity;
 import btw.block.tileentity.OvenTileEntity;
-import btw.block.tileentity.WickerBasketTileEntity;
 import btw.community.arminias.foodspoil.FoodType;
 import btw.community.arminias.foodspoil.Utils;
 import net.minecraft.src.ItemStack;
@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(value = {WickerBasketTileEntity.class, OvenTileEntity.class} )
+@Mixin(value = {BarkBoxTileEntity.class, OvenTileEntity.class} )
 public class SingleInventoryMixin extends TileEntity {
 
     @Shadow(aliases = {"storageStack", "cookStack"}, remap = false)

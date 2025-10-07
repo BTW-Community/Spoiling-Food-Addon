@@ -4,6 +4,7 @@
   "package": "btw.community.arminias.foodspoil.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "BarkBoxTileEntityMixin",
     "BTWContainersMixin",
     "BulkCraftingManagerMixin",
     "BulkRecipeAccessor",
