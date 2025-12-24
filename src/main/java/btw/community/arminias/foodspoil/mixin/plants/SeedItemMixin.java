@@ -1,9 +1,9 @@
 package btw.community.arminias.foodspoil.mixin.plants;
 
 import btw.community.arminias.metadata.extension.WorldExtension;
-import btw.item.items.SeedFoodItem;
-import btw.item.items.SeedItem;
-import btw.world.util.BlockPos;
+import api.item.items.SeedFoodItem;
+import api.item.items.SeedItem;
+import api.world.BlockPos;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.World;

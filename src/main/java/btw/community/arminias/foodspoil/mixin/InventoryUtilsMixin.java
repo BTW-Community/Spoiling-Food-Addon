@@ -1,7 +1,7 @@
 package btw.community.arminias.foodspoil.mixin;
 
+import api.inventory.InventoryUtils;
 import btw.community.arminias.foodspoil.Utils;
-import btw.inventory.util.InventoryUtils;
 import net.minecraft.src.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

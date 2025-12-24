@@ -1,9 +1,9 @@
 package btw.community.arminias.foodspoil.mixin.plants;
 
-import btw.block.blocks.CropsBlock;
+import api.block.blocks.CropsBlock;
 import btw.block.blocks.PlantsBlock;
 import btw.community.arminias.metadata.extension.WorldExtension;
-import btw.item.util.ItemUtils;
+import api.item.util.ItemUtils;
 import btw.community.arminias.foodspoil.FoodSpoilAddon;
 import btw.community.arminias.foodspoil.FoodSpoilMod;
 import net.minecraft.src.*;
@@ -24,7 +24,7 @@ public abstract class CropsBlockMixin extends PlantsBlock {
         super(iBlockID, material);
     }
 
-    @Inject(method = "updateTick", at = @At(value = "INVOKE", target = "Lbtw/block/blocks/CropsBlock;isFullyGrown(Lnet/minecraft/src/World;III)Z"), cancellable = true)
+    @Inject(method = "updateTick", at = @At(value = "INVOKE", target = "Lapi/block/blocks/CropsBlock;isFullyGrown(Lnet/minecraft/src/World;III)Z"), cancellable = true)
     private void updateTick(World world, int i, int j, int k, Random rand, CallbackInfo ci) {
         if (isFullyGrown(world, i, j, k)) {
             // Get extra metadata using extension

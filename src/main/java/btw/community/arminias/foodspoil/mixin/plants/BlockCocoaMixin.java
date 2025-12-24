@@ -1,9 +1,9 @@
 package btw.community.arminias.foodspoil.mixin.plants;
 
+import api.item.util.ItemUtils;
 import btw.community.arminias.foodspoil.FoodSpoilAddon;
 import btw.community.arminias.foodspoil.FoodSpoilMod;
 import btw.community.arminias.metadata.extension.WorldExtension;
-import btw.item.util.ItemUtils;
 import net.minecraft.src.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;

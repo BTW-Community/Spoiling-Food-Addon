@@ -1,9 +1,9 @@
 package btw.community.arminias.foodspoil;
 
+import api.inventory.InventoryUtils;
+import api.world.WorldUtils;
 import btw.BTWMod;
 import btw.block.blocks.VesselBlock;
-import btw.inventory.util.InventoryUtils;
-import btw.world.util.WorldUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.src.*;

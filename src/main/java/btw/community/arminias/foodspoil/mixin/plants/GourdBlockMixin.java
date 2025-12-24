@@ -1,10 +1,10 @@
 package btw.community.arminias.foodspoil.mixin.plants;
 
-import btw.block.blocks.FallingBlock;
+import api.block.blocks.FallingBlock;
 import btw.block.blocks.GourdBlock;
 import btw.community.arminias.foodspoil.FoodType;
 import btw.community.arminias.metadata.extension.WorldExtension;
-import btw.item.util.ItemUtils;
+import api.item.util.ItemUtils;
 import btw.community.arminias.foodspoil.FoodSpoilAddon;
 import btw.community.arminias.foodspoil.FoodSpoilMod;
 import net.minecraft.src.*;

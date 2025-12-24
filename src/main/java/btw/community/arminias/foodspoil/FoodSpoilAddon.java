@@ -1,9 +1,11 @@
 package btw.community.arminias.foodspoil;
 
-import btw.BTWAddon;
+import api.BTWAddon;
+import api.config.AddonConfig;
 import btw.block.BTWBlocks;
+import btw.community.arminias.foodspoil.mixin.AddonConfigAccessor;
 import btw.crafting.recipe.RecipeManager;
-import btw.inventory.util.InventoryUtils;
+import api.inventory.InventoryUtils;
 import btw.item.BTWItems;
 import net.minecraft.src.*;
 
@@ -34,18 +36,19 @@ public class FoodSpoilAddon extends BTWAddon {
     public static SleepingPotionItem sleepingPotion;
     public static Potion sleeping;
 
-    private Map<String, String> config;
+    private AddonConfig config;
 
     public FoodSpoilAddon() {
         //super("Food Spoil Addon", "0.3.0", "FoodSpoil");
         super();
         instance = this;
+        this.shouldVersionCheck = true;
     }
 
     @Override
     public void initialize() {
         spoiledCrop = new SpoiledCropItem(15673);
-        goldenCarrotTest = new ItemFood(15675, 1, 0F, false).setNonBuoyant().setFilterableProperties(FILTERABLE_SMALL).setUnlocalizedName("foodspoilmod:spoil_test");
+        goldenCarrotTest = new ItemFood(15675, 1, 0F, false).setNonBuoyant().setUnlocalizedName("foodspoilmod:spoil_test");
         int freezerBlockID = 2877;
         freezer = new FreezerBlock(freezerBlockID).setHardness(0.5F).setStepSound(Block.soundGlassFootstep).setUnlocalizedName("foodspoil.freezer")
                 .setCreativeTab(CreativeTabs.tabDecorations);
@@ -64,6 +67,7 @@ public class FoodSpoilAddon extends BTWAddon {
         parseLocalConfig();
     }
 
+    //TODO: Remove duplication with the other parseConfig method, wait for proper API sync support
     private void parseConfig(Map<String, String> parseableConfig) {
         for (FoodType foodType : FoodType.values()) {
             String key = foodType.name() + "_DECAY";
@@ -84,39 +88,59 @@ public class FoodSpoilAddon extends BTWAddon {
         BASE_FREEZE_TIME = Integer.parseInt(parseableConfig.get("BASE_FREEZE_TIME"));
     }
 
+    public void parseConfig(AddonConfig parseableConfig) {
+        for (FoodType foodType : FoodType.values()) {
+            String key = foodType.name() + "_DECAY";
+            if (parseableConfig.getExists(key)) {
+                float decay = (float) parseableConfig.getDouble(key);
+                decayMultipliers.put(foodType, decay);
+            }
+        }
+
+        GLOBAL_FOOD_DECAY = (float) parseableConfig.getDouble("GLOBAL_FOOD_DECAY");
+        PLANT_SPOIL_AGE = parseableConfig.getInt("PLANT_SPOIL_AGE");
+        FOOD_GETTING_BAD_PERCENTAGE = parseableConfig.getDouble("FOOD_GETTING_BAD_PERCENTAGE");
+        WORLD_ICE_PRESERVATION_FACTOR = parseableConfig.getDouble("WORLD_ICE_PRESERVATION_FACTOR");
+        AUTOMATIC_MERGE_THRESHOLD = (float) parseableConfig.getDouble("AUTOMATIC_MERGE_THRESHOLD");
+        COOKING_SPOILING_BONUS = (float) parseableConfig.getDouble("COOKING_SPOILING_BONUS");
+        ANIMAL_OLD_AGE = parseableConfig.getInt("ANIMAL_OLD_AGE");
+        ANIMAL_DEATH_AGE = parseableConfig.getInt("ANIMAL_DEATH_AGE");
+        BASE_FREEZE_TIME = parseableConfig.getInt("BASE_FREEZE_TIME");
+    }
+
     public void parseLocalConfig() {
         parseConfig(config);
     }
 
     @Override
-    public void preInitialize() {
-        this.registerProperty("GLOBAL_FOOD_DECAY", "1.0");
-        this.registerProperty("MEAT_DECAY", "6.0", "All decay/age values in MC days");
-        this.registerProperty("VEGETABLE_DECAY", "9.0");
-        this.registerProperty("FRUIT_DECAY", "9.0");
-        this.registerProperty("BREAD_DECAY", "10.0");
-        this.registerProperty("FISH_DECAY", "4.0");
-        this.registerProperty("MILK_DECAY", "7.0");
-        this.registerProperty("EGG_DECAY", "7.0");
-        this.registerProperty("SWEET_DECAY", "10.0");
-        this.registerProperty("MUSHROOM_DECAY", "7.0");
-        this.registerProperty("SOUP_DECAY", "7.0");
-        this.registerProperty("PLANT_DECAY", "10.0");
-        this.registerProperty("OTHER_DECAY", "10.0");
+    public void registerConfigProperties(AddonConfig config) {
+        config.registerDouble("GLOBAL_FOOD_DECAY", 1.0);
+        config.registerDouble("MEAT_DECAY", 6.0, "All decay/age values in MC days");
+        config.registerDouble("VEGETABLE_DECAY", 9.0);
+        config.registerDouble("FRUIT_DECAY", 9.0);
+        config.registerDouble("BREAD_DECAY", 10.0);
+        config.registerDouble("FISH_DECAY", 4.0);
+        config.registerDouble("MILK_DECAY", 7.0);
+        config.registerDouble("EGG_DECAY", 7.0);
+        config.registerDouble("SWEET_DECAY", 10.0);
+        config.registerDouble("MUSHROOM_DECAY", 7.0);
+        config.registerDouble("SOUP_DECAY", 7.0);
+        config.registerDouble("PLANT_DECAY", 10.0);
+        config.registerDouble("OTHER_DECAY", 10.0);
 
-        this.registerProperty("PLANT_SPOIL_AGE", "14");
-        this.registerProperty("FOOD_GETTING_BAD_PERCENTAGE", "0.15");
-        this.registerProperty("WORLD_ICE_PRESERVATION_FACTOR", "0.8");
-        this.registerProperty("AUTOMATIC_MERGE_THRESHOLD", "0.15");
-        this.registerProperty("COOKING_SPOILING_BONUS", "0.2");
-        this.registerProperty("ANIMAL_OLD_AGE", "28");
-        this.registerProperty("ANIMAL_DEATH_AGE", "56");
-        this.registerProperty("BASE_FREEZE_TIME", "400");
+        config.registerInt("PLANT_SPOIL_AGE", 14);
+        config.registerDouble("FOOD_GETTING_BAD_PERCENTAGE", 0.15);
+        config.registerDouble("WORLD_ICE_PRESERVATION_FACTOR", 0.8);
+        config.registerDouble("AUTOMATIC_MERGE_THRESHOLD", 0.15);
+        config.registerDouble("COOKING_SPOILING_BONUS", 0.2);
+        config.registerInt("ANIMAL_OLD_AGE", 28);
+        config.registerInt("ANIMAL_DEATH_AGE", 56);
+        config.registerInt("BASE_FREEZE_TIME", 400);
     }
 
     @Override
-    public void handleConfigProperties(Map<String, String> propertyValues) {
-        this.config = propertyValues;
+    public void handleConfigProperties(AddonConfig config) {
+        this.config = config;
     }
 
     @Override
@@ -156,7 +180,7 @@ public class FoodSpoilAddon extends BTWAddon {
 
     @Override
     public void serverPlayerConnectionInitialized(NetServerHandler serverHandler, EntityPlayerMP playerMP) {
-        serverHandler.sendPacketToPlayer(new Packet250CustomPayload("foodspoilmod|config", config.entrySet().stream().map(entry -> entry.getKey() + "=" + entry.getValue()).reduce((a, b) -> a + "\n" + b).get().getBytes()));
+        serverHandler.sendPacketToPlayer(new Packet250CustomPayload("foodspoilmod|config", ((AddonConfigAccessor) (Object) config).getCurrentConfig().entrySet().stream().map(entry -> entry.getKey() + "=" + entry.getValue().unwrapped().toString()).reduce((a, b) -> a + "\n" + b).get().getBytes()));
     }
 
     @Override

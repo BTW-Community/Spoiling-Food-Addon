@@ -1,12 +1,12 @@
 package btw.community.arminias.foodspoil.mixin;
 
+import api.inventory.InventoryUtils;
 import btw.community.arminias.foodspoil.BooleanFloatPair;
 import btw.community.arminias.foodspoil.FoodSpoilAddon;
 import btw.community.arminias.foodspoil.FoodSpoilMod;
 import btw.community.arminias.foodspoil.Utils;
 import btw.crafting.manager.BulkCraftingManager;
 import btw.crafting.recipe.types.BulkRecipe;
-import btw.inventory.util.InventoryUtils;
 import net.minecraft.src.IInventory;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;

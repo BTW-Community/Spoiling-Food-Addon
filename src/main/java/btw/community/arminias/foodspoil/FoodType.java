@@ -11,7 +11,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static btw.util.MiscUtils.TICKS_PER_GAME_DAY;
+import static api.util.MiscUtils.TICKS_PER_GAME_DAY;
+
 
 public enum FoodType {
     MEAT(TICKS_PER_GAME_DAY, Item.rottenFlesh),

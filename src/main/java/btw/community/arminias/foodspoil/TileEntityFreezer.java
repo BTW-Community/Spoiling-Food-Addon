@@ -1,11 +1,11 @@
 package btw.community.arminias.foodspoil;
 
+import api.block.TileEntityDataPacketHandler;
+import api.inventory.InventoryUtils;
+import api.util.MiscUtils;
+import api.world.BlockPos;
+import api.world.WorldUtils;
 import btw.block.BTWBlocks;
-import btw.block.tileentity.TileEntityDataPacketHandler;
-import btw.inventory.util.InventoryUtils;
-import btw.util.MiscUtils;
-import btw.world.util.BlockPos;
-import btw.world.util.WorldUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.src.*;

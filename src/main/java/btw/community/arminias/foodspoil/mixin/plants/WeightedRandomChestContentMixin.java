@@ -1,8 +1,8 @@
 package btw.community.arminias.foodspoil.mixin.plants;
 
 
-import btw.item.items.SeedFoodItem;
-import btw.item.items.SeedItem;
+import api.item.items.SeedFoodItem;
+import api.item.items.SeedItem;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.WeightedRandomChestContent;
 import org.spongepowered.asm.mixin.Mixin;

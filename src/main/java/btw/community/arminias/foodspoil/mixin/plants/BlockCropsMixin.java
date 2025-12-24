@@ -1,10 +1,10 @@
 package btw.community.arminias.foodspoil.mixin.plants;
 
-import btw.block.blocks.CropsBlock;
+import api.block.blocks.CropsBlock;
 import btw.block.blocks.HempCropBlock;
 import btw.block.blocks.PlantsBlock;
 import btw.community.arminias.metadata.extension.WorldExtension;
-import btw.item.util.ItemUtils;
+import api.item.util.ItemUtils;
 import btw.community.arminias.foodspoil.FoodSpoilAddon;
 import btw.community.arminias.foodspoil.FoodSpoilMod;
 import net.minecraft.src.*;
