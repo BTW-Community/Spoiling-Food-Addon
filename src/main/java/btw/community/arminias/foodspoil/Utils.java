@@ -94,11 +94,12 @@ public class Utils {
             if (itemStack.stackTagCompound == null) {
                 itemStack.setTagCompound(new NBTTagCompound());
             }
+            long totalWorldTime = getTotalWorldTime();
             if (!itemStack.stackTagCompound.hasKey("spoilDate")) {
-                itemStack.stackTagCompound.setLong("spoilDate", Minecraft.getMinecraft().theWorld.getTotalWorldTime() + FoodType.getDecayTimeFast(par1));
+                itemStack.stackTagCompound.setLong("spoilDate", totalWorldTime + FoodType.getDecayTimeFast(par1));
             }
             if (!itemStack.stackTagCompound.hasKey("creationDate")) {
-                itemStack.stackTagCompound.setLong("creationDate", Minecraft.getMinecraft().theWorld.getTotalWorldTime());
+                itemStack.stackTagCompound.setLong("creationDate", totalWorldTime);
             }
         }
     }
@@ -173,7 +174,14 @@ public class Utils {
         if (MinecraftServer.getIsServer()) {
             return MinecraftServer.getServer().worldServers[0].getTotalWorldTime();
         } else {
-            return Minecraft.getMinecraft().theWorld.getTotalWorldTime();
+            World world = Minecraft.getMinecraft().theWorld;
+            if (world == null && MinecraftServer.getServer() != null && MinecraftServer.getServer().worldServers != null && MinecraftServer.getServer().worldServers.length > 0) {
+                world = MinecraftServer.getServer().worldServers[0];
+            }
+            if (world == null) {
+                return 0;
+            }
+            return world.getTotalWorldTime();
         }
     }
 
